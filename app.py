@@ -66,11 +66,17 @@ def precipitation_data():
     return jsonify(precipitation)
 
 # Stations
-joined = session.query(Station.id,Measurement.station).join(Station, Measurement.station==Station.station).group_by(Measurement.station).order_by(Station.id).all()
+joined = session.query(Station.id,Measurement.station,Station.name,Station.latitude,Station.longitude,Station.elevation).join(Station, Measurement.station==Station.station).group_by(Measurement.station).order_by(Station.id).all()
 
 stations_dict = {}
 for tuple in joined:
-     stations_dict[tuple[0]] = tuple[1]
+     stations_dict[tuple[0]] = {
+          'Station': tuple[1],
+          'Name': tuple[2],
+          'Latitude': tuple[3],
+          'Longitude': tuple[4],
+          'Elevation': tuple[5]
+     }
 
 @app.route("/api/v1.0/stations")
 def stations_list():
